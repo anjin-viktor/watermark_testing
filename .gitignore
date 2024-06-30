@@ -1,0 +1,15 @@
+/utils/__pycache__
+/utils/reference.bmp
+/utils/watermarked.bmp
+/watermarks/__pycache__
+/watermarks/agriculture-hd.jpg
+/watermarks/reference.bmp
+/watermarks/watermarked.png
+/tests/out_95734038_2ab5783da7.bmp
+/tests/test.bmp
+/tests/__pycache__
+/tests/agriculture-hd.jpg
+/tests/agriculture-miror.bmp
+/tests/agriculture-sd.jpg
+/tests/agriculture-test.bmp
+/tmp
