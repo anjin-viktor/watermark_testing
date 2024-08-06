@@ -13,3 +13,5 @@
 /tests/agriculture-sd.jpg
 /tests/agriculture-test.bmp
 /tmp
+/helpers/color_to_gray.exe
+/helpers/opencv_world490.dll

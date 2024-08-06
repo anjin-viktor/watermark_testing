@@ -10,11 +10,26 @@ from tests import filter
 from tests import transcode
 
 def testImage(input_filename, level):
+    os.makedirs("tmp", exist_ok=True)
+    os.makedirs("tmp/reference", exist_ok=True)
+    os.makedirs("tmp/reference_scale", exist_ok=True)
+    os.makedirs("tmp/reference_crop", exist_ok=True)
+    os.makedirs("tmp/out", exist_ok=True)
+    os.makedirs("tmp/filter_dctdnoiz_5", exist_ok=True)
+    os.makedirs("tmp/filter_dctdnoiz_10", exist_ok=True)
+    os.makedirs("tmp/unsharp_blur", exist_ok=True)
+    os.makedirs("tmp/unsharp_sharp", exist_ok=True)
+    os.makedirs("tmp/scale_75", exist_ok=True)
+    os.makedirs("tmp/crop_75", exist_ok=True)
+    os.makedirs("tmp/transcode_1", exist_ok=True)
+    os.makedirs("tmp/transcode_25", exist_ok=True)
+    os.makedirs("tmp/transcode_45", exist_ok=True)
+
     filename = Path(input_filename)
     filename_wo_ext = filename.with_suffix('')
 
-    reference_name = "tmp/reference_" + str(level) + "_" +  str(filename_wo_ext) + ".bmp"
-    output_name = "tmp/out_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    reference_name = "tmp/reference/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
+    output_name = "tmp/out/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
 
     input_file = "images/" + input_filename
 
@@ -22,43 +37,43 @@ def testImage(input_filename, level):
     eblind_dlc.embed(input_file, reference_name, output_name, level)
     result = eblind_dlc.detect(output_name, reference_name)
 
-    dctdnoiz_5_name = "tmp/filter_dctdnoiz_5_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    dctdnoiz_5_name = "tmp/filter_dctdnoiz_5/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     filter.run("dctdnoiz=s=5", output_name, dctdnoiz_5_name)
     result_dctdnoiz_5 = eblind_dlc.detect(dctdnoiz_5_name, reference_name)
 
-    dctdnoiz_10_name = "tmp/filter_dctdnoiz_10_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    dctdnoiz_10_name = "tmp/filter_dctdnoiz_10/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     filter.run("dctdnoiz=s=10", output_name, dctdnoiz_10_name)
     result_dctdnoiz_10 = eblind_dlc.detect(dctdnoiz_10_name, reference_name)
 
-    unsharp_name = "tmp/unsharp_blur_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
-    filter.run("unsharp=3:3:-0.5:3:3:-0.5", output_name, unsharp_name)
+    unsharp_name = "tmp/unsharp_blur/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
+    filter.run("unsharp=3:3:-0.25:3:3:-0.25", output_name, unsharp_name)
     result_unsharp = eblind_dlc.detect(unsharp_name, reference_name)
 
-    sharp_name = "tmp/unsharp_sharp_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
-    filter.run("unsharp=3:3:0.5:3:3:0.5", output_name, sharp_name)
+    sharp_name = "tmp/unsharp_sharp/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
+    filter.run("unsharp=3:3:0.25:3:3:0.25", output_name, sharp_name)
     result_sharp = eblind_dlc.detect(sharp_name, reference_name)
 
-    scale_name = "tmp/scale_75" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    scale_name = "tmp/scale_75/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     filter.run("scale=iw*.75:-1", output_name, scale_name)
-    reference_scale_name = "tmp/reference_scale_" + str(level) + "_" +  str(filename_wo_ext) + ".bmp"
+    reference_scale_name = "tmp/reference_scale/" + str(level) + "_" +  str(filename_wo_ext) + ".bmp"
     filter.run("scale=iw*.75:-1", reference_name, reference_scale_name)
     result_scale = eblind_dlc.detect(scale_name, reference_scale_name)
 
-    crop_name = "tmp/crop_75" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    crop_name = "tmp/crop_75/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     filter.run("crop=iw*.75:ih*.75", output_name, crop_name)
-    reference_crop_name = "tmp/reference_crop_" + str(level) + "_" +  str(filename_wo_ext) + ".bmp"
+    reference_crop_name = "tmp/reference_crop/" + str(level) + "_" +  str(filename_wo_ext) + ".bmp"
     filter.run("crop=iw*.75:ih*.75", reference_name, reference_crop_name)
     result_crop = eblind_dlc.detect(crop_name, reference_crop_name)
 
-    transcode_1_name = "tmp/transcode_1_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    transcode_1_name = "tmp/transcode_1/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     transcode.run("mjpeg", ["-qmin", "1", "-qmax", "1"], output_name, transcode_1_name)
     transcode_1 = eblind_dlc.detect(transcode_1_name, reference_name)
 
-    transcode_25_name = "tmp/transcode_25_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    transcode_25_name = "tmp/transcode_25/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     transcode.run("mjpeg", ["-qmin", "25", "-qmax", "25"], output_name, transcode_25_name)
     transcode_25 = eblind_dlc.detect(transcode_25_name, reference_name)
 
-    transcode_45_name = "tmp/transcode_45_" + str(level) + "_" + str(filename_wo_ext) + ".bmp"
+    transcode_45_name = "tmp/transcode_45/" + str(filename_wo_ext) + "_" + str(level) + ".bmp"
     transcode.run("mjpeg", ["-qmin", "45", "-qmax", "45"], output_name, transcode_45_name)
     transcode_45 = eblind_dlc.detect(transcode_45_name, reference_name)
 
@@ -87,6 +102,7 @@ def testImage(input_filename, level):
     os.remove(unsharp_name)
     os.remove(sharp_name)
     os.remove(scale_name)
+    os.remove(crop_name)
     os.remove(reference_scale_name)
     os.remove(reference_crop_name)
     os.remove(transcode_1_name)
@@ -101,7 +117,6 @@ def testImage(input_filename, level):
 
 levels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
 
-os.makedirs("tmp", exist_ok=True)
 
 csvfile = open('eblind_dlc.csv', 'w', newline='', encoding='utf-8')
 writer = csv.writer(csvfile)
